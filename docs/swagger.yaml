@@ -1,0 +1,485 @@
+basePath: /
+definitions:
+  handler.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  main.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  model.Comment:
+    properties:
+      body:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      postID:
+        type: integer
+    required:
+    - email
+    - name
+    type: object
+  model.NewComment:
+    properties:
+      body:
+        example: I like tea
+        type: string
+      name:
+        example: jon
+        type: string
+      postID:
+        example: 1
+        type: integer
+    required:
+    - name
+    type: object
+  model.NewPost:
+    properties:
+      body:
+        example: Tea is good for your health
+        type: string
+      title:
+        example: Tea
+        type: string
+    type: object
+  model.Post:
+    properties:
+      body:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      userID:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      picture:
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact:
+    email: support@swagger.io
+    name: Login with google here
+    url: https://accounts.google.com/o/oauth2/auth?client_id=732894594352-3pa74unjkjdsq6ql7nbmtaor2t2735jv.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A1323%2FauthGood&response_type=code&scope=email+profile&state=1234
+  description: This is a sample server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: App Example API
+  version: "1.0"
+paths:
+  /comment/:
+    get:
+      consumes:
+      - application/json
+      description: get list of comments comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            Token:
+              description: qwerty
+              type: string
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      summary: List comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: add by json comment
+      parameters:
+      - description: Add comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/model.NewComment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Add an comment
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update by json comment
+      parameters:
+      - description: Update comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/model.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      summary: Update an comment
+      tags:
+      - comments
+  /comment/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete by comment ID
+      parameters:
+      - description: comment ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Comment'
+      summary: Delete an comment
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      summary: Show an comment
+      tags:
+      - comments
+  /home/:
+    get:
+      consumes:
+      - application/json
+      description: Use provided link to log in with Google
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Log in with Google
+      tags:
+      - auth
+  /login/:
+    get:
+      consumes:
+      - application/json
+      description: Login with app if you have registered with us
+      parameters:
+      - description: name
+        format: string
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: password
+        format: string
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.HTTPError'
+      summary: Login with the app
+      tags:
+      - auth
+  /post/:
+    get:
+      consumes:
+      - application/json
+      description: get list of posts posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Post'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      summary: List posts
+      tags:
+      - posts
+    post:
+      consumes:
+      - application/json
+      description: add by json post
+      parameters:
+      - description: Add post
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/model.NewPost'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a post
+      tags:
+      - posts
+    put:
+      consumes:
+      - application/json
+      description: Update by json post
+      parameters:
+      - description: Update post
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/model.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      summary: Update a post
+      tags:
+      - posts
+  /post/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete by post ID
+      parameters:
+      - description: post ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Post'
+      summary: Delete a post
+      tags:
+      - posts
+    get:
+      consumes:
+      - application/json
+      description: get post by ID
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Post'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.HTTPError'
+      summary: Show a post
+      tags:
+      - posts
+  /signup/:
+    post:
+      consumes:
+      - application/json
+      description: 'Register: email should be unique, pasword from 6 to 25 char long'
+      parameters:
+      - description: Register user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.HTTPError'
+      summary: Signup with app
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
