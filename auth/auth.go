@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ import (
 	"mnt/c/Users/DELL/nix/model"
 )
 
-// Deletecomment godoc
+// Home godoc
 // @Summary Log in with Google
 // @Description Use provided link to log in with Google
 // @Tags auth
@@ -20,7 +20,7 @@ import (
 // @Produce  json
 // @Success 200 {object} string
 // @Router /home/ [get]
-func home(c echo.Context) error {
+func Home(c echo.Context) error {
 	conf := oauth2.Config{
 		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
@@ -42,7 +42,7 @@ func home(c echo.Context) error {
 // @Success 200 {object} model.User
 // @Failure 400 {object} HTTPError
 // @Router /signup/ [post]
-func signup(db *gorm.DB) echo.HandlerFunc {
+func Signup(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := &model.User{}
 		c.Bind(user)
@@ -72,7 +72,7 @@ func signup(db *gorm.DB) echo.HandlerFunc {
 // @Failure 400 {object} HTTPError
 // @Failure 401 {object} HTTPError
 // @Router /login/ [get]
-func login(db *gorm.DB) echo.HandlerFunc {
+func Login(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := &model.User{}
 		user.Name = c.QueryParam("name")

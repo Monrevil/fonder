@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"encoding/json"
@@ -13,9 +13,9 @@ import (
 	"gorm.io/gorm"
 )
 
-//Google callback endpoint
+//GoogleCallback callback endpoint
 //Google returns email+name
-func googleCallback(db *gorm.DB) echo.HandlerFunc {
+func GoogleCallback(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		conf := oauth2.Config{
 			ClientID:     config.ClientID,

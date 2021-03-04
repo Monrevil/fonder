@@ -10,6 +10,7 @@ import (
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 
+	a "mnt/c/Users/DELL/nix/auth"
 	h "mnt/c/Users/DELL/nix/handler"
 )
 
@@ -32,8 +33,8 @@ func setRoutes(e *echo.Echo, db *gorm.DB) {
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	e.GET("/home/", home)
-	e.GET("/googleCallback/", googleCallback(db))
-	e.POST("/signup/", signup(db))
-	e.GET("/login/", login(db))
+	e.GET("/home/", a.Home)
+	e.GET("/googleCallback/", a.GoogleCallback(db))
+	e.POST("/signup/", a.Signup(db))
+	e.GET("/login/", a.Login(db))
 }
