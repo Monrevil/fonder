@@ -1,0 +1,16 @@
+{
+    "web": {
+        "client_id": "732894594352-3pa74unjkjdsq6ql7nbmtaor2t2735jv.apps.googleusercontent.com",
+        "project_id": "perfect-day-305414",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "NzCvguJ7rAVBf7L2k5VdTkXa",
+        "redirect_uris": [
+            "http://localhost:1323/authGood"
+        ],
+        "javascript_origins": [
+            "http://localhost:1323"
+        ]
+    }
+}
