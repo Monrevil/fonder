@@ -3,8 +3,8 @@ package auth
 import (
 	"encoding/json"
 	"io/ioutil"
-	"mnt/c/Users/DELL/nix/config"
-	"mnt/c/Users/DELL/nix/model"
+	"github.com/Monrevil/fonder/config"
+	"github.com/Monrevil/fonder/model"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

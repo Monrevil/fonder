@@ -5,13 +5,13 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 
-	"mnt/c/Users/DELL/nix/config"
-	_ "mnt/c/Users/DELL/nix/docs"
+	"github.com/Monrevil/fonder/config"
+	_ "github.com/Monrevil/fonder/docs"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 
-	a "mnt/c/Users/DELL/nix/auth"
-	h "mnt/c/Users/DELL/nix/handler"
+	a "github.com/Monrevil/fonder/auth"
+	h "github.com/Monrevil/fonder/handler"
 )
 
 func setRoutes(e *echo.Echo, db *gorm.DB) {

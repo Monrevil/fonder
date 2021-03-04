@@ -1,2 +1,1 @@
-go1.15.8.linux-amd64.tar.gz
-*/config/config.go
+.config.go

@@ -8,7 +8,7 @@ import (
 	"github.com/go-ozzo/ozzo-validation/is"
 	"gorm.io/gorm"
 
-	"mnt/c/Users/DELL/nix/config"
+	"github.com/Monrevil/fonder/config"
 )
 
 // User contains info: email, id, name

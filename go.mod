@@ -1,4 +1,4 @@
-module mnt/c/Users/DELL/nix
+module github.com/Monrevil/fonder
 
 go 1.15
 

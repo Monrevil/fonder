@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
-	"mnt/c/Users/DELL/nix/model"
+	"github.com/Monrevil/fonder/model"
 )
 
 // ListComments godoc

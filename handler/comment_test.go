@@ -2,7 +2,7 @@ package handler
 
 import (
 	"encoding/json"
-	"mnt/c/Users/DELL/nix/model"
+	"github.com/Monrevil/fonder/model"
 	"net/http"
 	"net/http/httptest"
 	"strings"

@@ -8,8 +8,8 @@ import (
 	"golang.org/x/oauth2/google"
 	"gorm.io/gorm"
 
-	"mnt/c/Users/DELL/nix/config"
-	"mnt/c/Users/DELL/nix/model"
+	"github.com/Monrevil/fonder/config"
+	"github.com/Monrevil/fonder/model"
 )
 
 // Home godoc

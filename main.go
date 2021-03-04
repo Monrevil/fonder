@@ -1,7 +1,7 @@
 package main
 
 import (
-	"mnt/c/Users/DELL/nix/model"
+	"github.com/Monrevil/fonder/model"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"mnt/c/Users/DELL/nix/config"
+	"github.com/Monrevil/fonder/config"
 	"time"
 
 	"gorm.io/driver/mysql"
