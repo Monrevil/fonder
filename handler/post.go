@@ -25,20 +25,15 @@ func ListPosts(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		err := model.PingDB(db)
 		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error()+" Could not establish db connection")
+			return respond(c, http.StatusInternalServerError, err.Error()+" Could not establish db connection")
 		}
 		var posts []model.Post
 		result := db.Find(&posts)
 
 		if result.Error != nil {
-			return c.String(http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
+			return respond(c, http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
 		}
-
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, posts)
-		}
-		return c.JSON(http.StatusOK, posts)
+		return respond(c, http.StatusOK, posts)
 	}
 }
 
@@ -60,10 +55,10 @@ func SavePost(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		post := new(model.Post)
 		if err := c.Bind(post); err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
+			return respond(c, http.StatusBadRequest, err.Error())
 		}
 		if err := post.Validate(); err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
+			return respond(c, http.StatusBadRequest, err.Error())
 		}
 		//get info from jwt
 		user := c.Get("user").(*jwt.Token)
@@ -79,11 +74,7 @@ func SavePost(db *gorm.DB) echo.HandlerFunc {
 		model.PingDB(db)
 		db.Create(sanitized)
 
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, sanitized)
-		}
-		return c.JSON(http.StatusCreated, sanitized)
+		return respond(c, http.StatusCreated, sanitized)
 	}
 }
 
@@ -105,20 +96,15 @@ func GetPost(db *gorm.DB) echo.HandlerFunc {
 		id := c.Param("id")
 		err := model.PingDB(db)
 		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
+			return respond(c, http.StatusInternalServerError, err.Error())
 		}
 		post := &model.Post{}
 		result := db.Take(post, id)
 
 		if result.Error != nil {
-			return c.String(http.StatusNotFound, result.Error.Error())
+			return respond(c, http.StatusNotFound, result.Error.Error())
 		}
-
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, post)
-		}
-		return c.JSON(http.StatusOK, post)
+		return respond(c, http.StatusOK, post)
 	}
 }
 
@@ -139,18 +125,14 @@ func UpdatePost(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		post := &model.Post{}
 		if err := c.Bind(post); err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
+			return respond(c, http.StatusBadRequest, err.Error())
 		}
 		if err := db.Take(&model.Post{}, post.ID); err != nil {
-			return c.JSON(http.StatusNotFound, "record not found")
+			return respond(c, http.StatusNotFound, "record not found")
 		}
 		db.Save(post)
 
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, post)
-		}
-		return c.JSON(http.StatusOK, post)
+		return respond(c, http.StatusOK, post)
 	}
 }
 
@@ -167,6 +149,6 @@ func DeletePost(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id := c.Param("id")
 		db.Delete(&model.Post{}, id)
-		return c.JSON(http.StatusNoContent, map[string]string{id: "Was deleted"})
+		return respond(c, http.StatusNoContent, map[string]string{id: "Was deleted"})
 	}
 }
