@@ -97,18 +97,14 @@ func UpdateComment(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		comment := &model.Comment{}
 		if err := c.Bind(comment); err != nil {
-			return c.JSON(http.StatusBadRequest, "Could not bind comment")
+			return respond(c, http.StatusBadRequest, "Could not bind comment")
 		}
 		if err := db.Take(&model.Comment{}, comment.ID); err != nil {
-			return c.JSON(http.StatusNotFound, "record not found")
+			return respond(c, http.StatusNotFound, "record not found")
 		}
 		db.Save(comment)
 
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, comment)
-		}
-		return c.JSON(http.StatusOK, comment)
+		return respond(c, http.StatusOK, comment)
 	}
 }
 
@@ -126,6 +122,6 @@ func DeleteComment(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id := c.Param("id")
 		db.Delete(&model.Comment{}, id)
-		return c.JSON(http.StatusNoContent, map[string]string{id: "Was deleted"})
+		return respond(c, http.StatusNoContent, map[string]string{id: "Was deleted"})
 	}
 }
