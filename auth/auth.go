@@ -20,7 +20,7 @@ import (
 // @Tags auth
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} json
+// @Success 200 {object} model.Comment
 // @Router /home/ [get]
 func Home(c echo.Context) error {
 	conf := oauth2.Config{
@@ -66,7 +66,7 @@ func Home(c echo.Context) error {
 // @Produce  json
 // @Param  user body model.User true "Register user"
 // @Success 200 {object} model.User
-// @Failure 400 {object} HTTPError
+// @Failure 400
 // @Router /signup/ [post]
 func Signup(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -95,8 +95,8 @@ func Signup(db *gorm.DB) echo.HandlerFunc {
 // @Param  name query string true "name" Format(string)
 // @Param  password query string true "password" Format(string)
 // @Success 200 {object} model.User
-// @Failure 400 {object} HTTPError
-// @Failure 401 {object} HTTPError
+// @Failure 400
+// @Failure 401 
 // @Router /login/ [get]
 func Login(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {

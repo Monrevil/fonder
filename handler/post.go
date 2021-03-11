@@ -16,6 +16,7 @@ import (
 // @Tags posts
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Success 200 {array} model.Post
 // @Failure 400,404 {object} HTTPError
 // @Failure 500 {object} HTTPError
@@ -32,6 +33,11 @@ func ListPosts(db *gorm.DB) echo.HandlerFunc {
 		if result.Error != nil {
 			return c.String(http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
 		}
+
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, posts)
+		}
 		return c.JSON(http.StatusOK, posts)
 	}
 }
@@ -42,6 +48,7 @@ func ListPosts(db *gorm.DB) echo.HandlerFunc {
 // @Tags posts
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Param post body model.NewPost true "Add post"
 // @Security ApiKeyAuth
 // @Success 201 {object} model.Post
@@ -72,6 +79,10 @@ func SavePost(db *gorm.DB) echo.HandlerFunc {
 		model.PingDB(db)
 		db.Create(sanitized)
 
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, sanitized)
+		}
 		return c.JSON(http.StatusCreated, sanitized)
 	}
 }
@@ -82,6 +93,7 @@ func SavePost(db *gorm.DB) echo.HandlerFunc {
 // @Tags posts
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Param id path int true "Post ID"
 // @Success 200 {object} model.Post
 // @Failure 400 {object} HTTPError
@@ -101,6 +113,11 @@ func GetPost(db *gorm.DB) echo.HandlerFunc {
 		if result.Error != nil {
 			return c.String(http.StatusNotFound, result.Error.Error())
 		}
+
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, post)
+		}
 		return c.JSON(http.StatusOK, post)
 	}
 }
@@ -111,6 +128,7 @@ func GetPost(db *gorm.DB) echo.HandlerFunc {
 // @Tags posts
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Param  post body model.Post true "Update post"
 // @Success 200 {object} model.Post
 // @Failure 400 {object} HTTPError
@@ -127,6 +145,11 @@ func UpdatePost(db *gorm.DB) echo.HandlerFunc {
 			return c.JSON(http.StatusNotFound, "record not found")
 		}
 		db.Save(post)
+
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, post)
+		}
 		return c.JSON(http.StatusOK, post)
 	}
 }

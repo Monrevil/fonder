@@ -16,6 +16,7 @@ import (
 // @Tags comments
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Success 200 {array} model.Comment
 // @Header 200 {string} Token "qwerty"
 // @Failure 400,404 {object} HTTPError
@@ -33,6 +34,11 @@ func ListComments(db *gorm.DB) echo.HandlerFunc {
 		if result.Error != nil {
 			return c.String(http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
 		}
+
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, comments)
+		}
 		return c.JSON(http.StatusOK, comments)
 	}
 }
@@ -43,6 +49,7 @@ func ListComments(db *gorm.DB) echo.HandlerFunc {
 // @Tags comments
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Param comment body model.NewComment true "Add comment"
 // @Security ApiKeyAuth
 // @Success 201 {object} model.Comment
@@ -81,6 +88,10 @@ func SaveComment(db *gorm.DB) echo.HandlerFunc {
 		model.PingDB(db)
 		db.Create(sanitized)
 
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, sanitized)
+		}
 		return c.JSON(http.StatusCreated, sanitized)
 	}
 }
@@ -91,6 +102,7 @@ func SaveComment(db *gorm.DB) echo.HandlerFunc {
 // @Tags comments
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Param id path int true "Comment ID"
 // @Success 200 {object} model.Comment
 // @Failure 400 {object} HTTPError
@@ -110,6 +122,11 @@ func GetComment(db *gorm.DB) echo.HandlerFunc {
 		if result.Error != nil {
 			return c.String(http.StatusNotFound, result.Error.Error())
 		}
+
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, comment)
+		}
 		return c.JSON(http.StatusOK, comment)
 	}
 }
@@ -120,6 +137,7 @@ func GetComment(db *gorm.DB) echo.HandlerFunc {
 // @Tags comments
 // @Accept  json
 // @Produce  json
+// @Produce xml
 // @Param  comment body model.Comment true "Update comment"
 // @Success 200 {object} model.Comment
 // @Failure 400 {object} HTTPError
@@ -136,6 +154,11 @@ func UpdateComment(db *gorm.DB) echo.HandlerFunc {
 			return c.JSON(http.StatusNotFound, "record not found")
 		}
 		db.Save(comment)
+
+		accept := c.Request().Header.Get("accept")
+		if accept == "text/xml" {
+			return c.XML(http.StatusOK, comment)
+		}
 		return c.JSON(http.StatusOK, comment)
 	}
 }

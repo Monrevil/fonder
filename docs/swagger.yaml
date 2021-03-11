@@ -9,15 +9,6 @@ definitions:
         example: status bad request
         type: string
     type: object
-  main.HTTPError:
-    properties:
-      code:
-        example: 400
-        type: integer
-      message:
-        example: status bad request
-        type: string
-    type: object
   model.Comment:
     properties:
       body:
@@ -84,10 +75,9 @@ definitions:
 host: localhost:1323
 info:
   contact:
-    email: support@swagger.io
-    name: Login with google here
-    url: https://accounts.google.com/o/oauth2/auth?client_id=732894594352-3pa74unjkjdsq6ql7nbmtaor2t2735jv.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A1323%2FauthGood&response_type=code&scope=email+profile&state=1234
-  description: This is a sample server.
+    email: monrevil@gmail.com
+    name: Dmitrii Kozii
+  description: This is a sample api server.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -101,6 +91,7 @@ paths:
       description: get list of comments comments
       produces:
       - application/json
+      - text/xml
       responses:
         "200":
           description: OK
@@ -140,6 +131,7 @@ paths:
           $ref: '#/definitions/model.NewComment'
       produces:
       - application/json
+      - text/xml
       responses:
         "201":
           description: Created
@@ -179,6 +171,7 @@ paths:
           $ref: '#/definitions/model.Comment'
       produces:
       - application/json
+      - text/xml
       responses:
         "200":
           description: OK
@@ -213,6 +206,7 @@ paths:
         type: integer
       produces:
       - application/json
+      - text/xml
       responses:
         "204":
           description: No Content
@@ -233,6 +227,7 @@ paths:
         type: integer
       produces:
       - application/json
+      - text/xml
       responses:
         "200":
           description: OK
@@ -257,15 +252,15 @@ paths:
     get:
       consumes:
       - application/json
-      description: Use provided link to log in with Google
+      description: Use provided link to log in with Google/Facebook
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
-      summary: Log in with Google
+            $ref: '#/definitions/model.Comment'
+      summary: Log in with OAUTH2
       tags:
       - auth
   /login/:
@@ -294,9 +289,9 @@ paths:
           schema:
             $ref: '#/definitions/model.User'
         "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/main.HTTPError'
+          description: ""
+        "401":
+          description: ""
       summary: Login with the app
       tags:
       - auth
@@ -307,6 +302,7 @@ paths:
       description: get list of posts posts
       produces:
       - application/json
+      - text/xml
       responses:
         "200":
           description: OK
@@ -342,6 +338,7 @@ paths:
           $ref: '#/definitions/model.NewPost'
       produces:
       - application/json
+      - text/xml
       responses:
         "201":
           description: Created
@@ -377,6 +374,7 @@ paths:
           $ref: '#/definitions/model.Post'
       produces:
       - application/json
+      - text/xml
       responses:
         "200":
           description: OK
@@ -431,6 +429,7 @@ paths:
         type: integer
       produces:
       - application/json
+      - text/xml
       responses:
         "200":
           description: OK
@@ -471,9 +470,7 @@ paths:
           schema:
             $ref: '#/definitions/model.User'
         "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/main.HTTPError'
+          description: ""
       summary: Signup with app
       tags:
       - auth

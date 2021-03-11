@@ -19,9 +19,8 @@ var doc = `{
         "description": "{{.Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "Login with google here",
-            "url": "https://accounts.google.com/o/oauth2/auth?client_id=732894594352-3pa74unjkjdsq6ql7nbmtaor2t2735jv.apps.googleusercontent.com\u0026redirect_uri=http%3A%2F%2Flocalhost%3A1323%2FauthGood\u0026response_type=code\u0026scope=email+profile\u0026state=1234",
-            "email": "support@swagger.io"
+            "name": "Dmitrii Kozii",
+            "email": "monrevil@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -39,7 +38,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "comments"
@@ -87,7 +87,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "comments"
@@ -142,7 +143,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "comments"
@@ -200,7 +202,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "comments"
@@ -248,7 +251,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "comments"
@@ -276,7 +280,7 @@ var doc = `{
         },
         "/home/": {
             "get": {
-                "description": "Use provided link to log in with Google",
+                "description": "Use provided link to log in with Google/Facebook",
                 "consumes": [
                     "application/json"
                 ],
@@ -286,12 +290,12 @@ var doc = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Log in with Google",
+                "summary": "Log in with OAUTH2",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Comment"
                         }
                     }
                 }
@@ -336,10 +340,10 @@ var doc = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/main.HTTPError"
-                        }
+                        "description": ""
+                    },
+                    "401": {
+                        "description": ""
                     }
                 }
             }
@@ -351,7 +355,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "posts"
@@ -393,7 +398,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "posts"
@@ -448,7 +454,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "posts"
@@ -500,7 +507,8 @@ var doc = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "application/json",
+                    "text/xml"
                 ],
                 "tags": [
                     "posts"
@@ -606,10 +614,7 @@ var doc = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/main.HTTPError"
-                        }
+                        "description": ""
                     }
                 }
             }
@@ -617,19 +622,6 @@ var doc = `{
     },
     "definitions": {
         "handler.HTTPError": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer",
-                    "example": 400
-                },
-                "message": {
-                    "type": "string",
-                    "example": "status bad request"
-                }
-            }
-        },
-        "main.HTTPError": {
             "type": "object",
             "properties": {
                 "code": {
@@ -762,7 +754,7 @@ var SwaggerInfo = swaggerInfo{
 	BasePath:    "/",
 	Schemes:     []string{},
 	Title:       "App Example API",
-	Description: "This is a sample server.",
+	Description: "This is a sample api server.",
 }
 
 type s struct{}
