@@ -35,6 +35,8 @@ func setRoutes(e *echo.Echo, db *gorm.DB) {
 
 	e.GET("/home/", a.Home)
 	e.GET("/googleCallback/", a.GoogleCallback(db))
+	e.GET("/facebook-callback/", a.FacebookCallback(db))
+	e.GET("/twitter-callback/", a.TwitterCallback(db))
 	e.POST("/signup/", a.Signup(db))
 	e.GET("/login/", a.Login(db))
 }

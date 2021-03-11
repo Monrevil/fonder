@@ -5,7 +5,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
+	f "golang.org/x/oauth2/facebook"
 	"golang.org/x/oauth2/google"
+
 	"gorm.io/gorm"
 
 	"github.com/Monrevil/fonder/config"
@@ -18,18 +20,42 @@ import (
 // @Tags auth
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} string
+// @Success 200 {object} json
 // @Router /home/ [get]
 func Home(c echo.Context) error {
 	conf := oauth2.Config{
 		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
-		RedirectURL:  config.RedirectULR,
+		RedirectURL:  config.RedirectURL,
 		Scopes:       []string{config.Scope, "profile"},
 		Endpoint:     google.Endpoint,
 	}
 	url := conf.AuthCodeURL(config.State)
-	return c.String(200, url)
+	facebook := oauth2.Config{
+		ClientID:     config.FacebookID,
+		ClientSecret: config.FacebookSecret,
+		//x/oauth2 uses outdated enpoint for Facebook
+		Endpoint:    f.Endpoint,
+		RedirectURL: config.FacebookRedirect,
+		Scopes:      []string{"email"},
+	}
+	facebookURL := facebook.AuthCodeURL(config.State)
+	twitter := oauth2.Config{
+		ClientID:     config.TwitterID,
+		ClientSecret: config.TwitterSecret,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "https://api.twitter.com/oauth/authorize",
+			TokenURL: "https://api.twitter.com/oauth/access_token",
+		},
+		RedirectURL: config.TwitterRedirect,
+		Scopes:      []string{"email"},
+	}
+	twitterURL := twitter.AuthCodeURL(config.State)
+	return c.JSON(200, map[string]string{
+		"Google login: ":       url,
+		"Facebook login: ":     facebookURL,
+		"Login with Twitter: ": twitterURL,
+	})
 }
 
 // Signup godoc

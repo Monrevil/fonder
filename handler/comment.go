@@ -146,6 +146,7 @@ func UpdateComment(db *gorm.DB) echo.HandlerFunc {
 // @Tags comments
 // @Accept  json
 // @Produce  json
+// @Produce  xml
 // @Param  id path int true "comment ID" Format(int64)
 // @Success 204 {object} model.Comment
 // @Router /comment/{id} [delete]
