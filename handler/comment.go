@@ -35,12 +35,9 @@ func ListComments(db *gorm.DB) echo.HandlerFunc {
 			return c.String(http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
 		}
 
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, comments)
-		}
-		return c.JSON(http.StatusOK, comments)
+		return respond(c, http.StatusOK, comments)
 	}
+
 }
 
 // SaveComment godoc
