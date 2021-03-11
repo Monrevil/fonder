@@ -3,9 +3,10 @@ package auth
 import (
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
+
 	"github.com/Monrevil/fonder/config"
 	"github.com/Monrevil/fonder/model"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
@@ -16,14 +17,20 @@ import (
 //GoogleCallback callback endpoint
 //Google returns email+name
 func GoogleCallback(db *gorm.DB) echo.HandlerFunc {
+	conf := oauth2.Config{
+		ClientID:     config.ClientID,
+		ClientSecret: config.ClientSecret,
+		RedirectURL:  config.RedirectURL,
+		Scopes:       []string{config.Scope, "profile"},
+		Endpoint:     google.Endpoint,
+	}
+	url := "https://www.googleapis.com/oauth2/v2/userinfo/"
+	return handleCallback(db, conf, url)
+
+}
+
+func handleCallback(db *gorm.DB, conf oauth2.Config, endpoint string) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		conf := oauth2.Config{
-			ClientID:     config.ClientID,
-			ClientSecret: config.ClientSecret,
-			RedirectURL:  config.RedirectURL,
-			Scopes:       []string{config.Scope, "profile"},
-			Endpoint:     google.Endpoint,
-		}
 		code := c.FormValue("code")
 		tok, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
@@ -31,8 +38,7 @@ func GoogleCallback(db *gorm.DB) echo.HandlerFunc {
 		}
 		client := conf.Client(c.Request().Context(), tok)
 
-		url := "https://www.googleapis.com/oauth2/v2/userinfo/"
-		resp, err := client.Get(url)
+		resp, err := client.Get(endpoint)
 		if err != nil {
 			return c.String(http.StatusBadRequest, "could not get info from google")
 		}

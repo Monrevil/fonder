@@ -15,8 +15,8 @@ import (
 )
 
 // Home godoc
-// @Summary Log in with Google
-// @Description Use provided link to log in with Google
+// @Summary Log in with OAUTH2
+// @Description Use provided link to log in with Google/Facebook
 // @Tags auth
 // @Accept  json
 // @Produce  json
