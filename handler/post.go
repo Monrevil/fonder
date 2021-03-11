@@ -23,15 +23,9 @@ import (
 // @Router /post/ [get]
 func ListPosts(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		err := model.PingDB(db)
-		if err != nil {
-			return respond(c, http.StatusInternalServerError, err.Error()+" Could not establish db connection")
-		}
 		var posts []model.Post
-		result := db.Find(&posts)
-
-		if result.Error != nil {
-			return respond(c, http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
+		if err := listAll(db, &posts); err != nil {
+			return respond(c, http.StatusInternalServerError, err)
 		}
 		return respond(c, http.StatusOK, posts)
 	}
@@ -93,19 +87,13 @@ func SavePost(db *gorm.DB) echo.HandlerFunc {
 // @Router /post/{id} [get]
 func GetPost(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id := c.Param("id")
-		err := model.PingDB(db)
-		if err != nil {
-			return respond(c, http.StatusInternalServerError, err.Error())
-		}
 		post := &model.Post{}
-		result := db.Take(post, id)
-
-		if result.Error != nil {
-			return respond(c, http.StatusNotFound, result.Error.Error())
+		if code, err := getByID(c, db, post); err != nil {
+			return respond(c, code, err.Error())
 		}
 		return respond(c, http.StatusOK, post)
 	}
+
 }
 
 // UpdatePost godoc

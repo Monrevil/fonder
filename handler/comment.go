@@ -24,17 +24,10 @@ import (
 // @Router /comment/ [get]
 func ListComments(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		err := model.PingDB(db)
-		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error()+" Could not establish db connection")
-		}
 		var comments []model.Comment
-		result := db.Find(&comments)
-
-		if result.Error != nil {
-			return c.String(http.StatusInternalServerError, result.Error.Error()+" Could not get data from db")
+		if err := listAll(db, &comments); err != nil {
+			respond(c, http.StatusInternalServerError, err.Error())
 		}
-
 		return respond(c, http.StatusOK, comments)
 	}
 
@@ -56,9 +49,6 @@ func ListComments(db *gorm.DB) echo.HandlerFunc {
 // @Failure 500 {object} HTTPError
 // @Router /comment/ [post]
 func SaveComment(db *gorm.DB) echo.HandlerFunc {
-	//TODO:
-	// email from jwt
-	// validate email
 	return func(c echo.Context) error {
 		comment := new(model.Comment)
 		if err := c.Bind(comment); err != nil {
@@ -108,25 +98,15 @@ func SaveComment(db *gorm.DB) echo.HandlerFunc {
 // @Router /comment/{id} [get]
 func GetComment(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id := c.Param("id")
-		err := model.PingDB(db)
-		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
 		comment := &model.Comment{}
-		result := db.Take(comment, id)
-
-		if result.Error != nil {
-			return c.String(http.StatusNotFound, result.Error.Error())
+		if code, err := getByID(c, db, comment); err != nil {
+			return respond(c, code, err.Error())
 		}
-
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, comment)
-		}
-		return c.JSON(http.StatusOK, comment)
+		return respond(c, http.StatusOK, comment)
 	}
 }
+
+
 
 // UpdateComment godoc
 // @Summary Update an comment
