@@ -1,6 +1,10 @@
 package model
 
-import validation "github.com/go-ozzo/ozzo-validation"
+import (
+	"github.com/dgrijalva/jwt-go"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/labstack/echo/v4"
+)
 
 // Post struct
 type Post struct {
@@ -23,4 +27,14 @@ func (p *Post) Validate() error {
 		validation.Field(&p.Body, validation.Required, validation.Length(1, 500)),
 		validation.Field(&p.Title, validation.Required, validation.Length(1, 25)),
 	)
+}
+
+//Sanitize sets id from JWT token and post_id to 0
+func (p *Post) Sanitize(c echo.Context) {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	JWTid := int(claims["id"].(float64))
+	//sanitize
+	p.ID = 0
+	p.UserID = JWTid
 }

@@ -1,8 +1,10 @@
 package model
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"github.com/labstack/echo/v4"
 )
 
 // Comment struct
@@ -29,4 +31,14 @@ func (c *Comment) Validate() error {
 		validation.Field(&c.Body, validation.Required, validation.Length(1, 500)),
 		validation.Field(&c.Name, validation.Required, validation.Length(1, 25)),
 	)
+}
+
+//Sanitize sets id from JWT token and post_id to 0
+func (c *Comment) Sanitize(ctx echo.Context) {
+	user := ctx.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	JWTemail := claims["email"].(string)
+	c.ID = 0
+	c.Email = JWTemail
+
 }

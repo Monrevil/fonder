@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
@@ -51,35 +50,10 @@ func ListComments(db *gorm.DB) echo.HandlerFunc {
 func SaveComment(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		comment := new(model.Comment)
-		if err := c.Bind(comment); err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
+		if code, err := saveBody(c, db, comment); err != nil {
+			return respond(c, code, err.Error())
 		}
-
-		user := c.Get("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		JWTemail := claims["email"].(string)
-		comment.Email = JWTemail
-
-		if err := comment.Validate(); err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
-		//get info from jwt
-
-		//sanitize
-		sanitized := &model.Comment{
-			PostID: comment.PostID,
-			Name:   comment.Name,
-			Email:  JWTemail,
-			Body:   comment.Body,
-		}
-		model.PingDB(db)
-		db.Create(sanitized)
-
-		accept := c.Request().Header.Get("accept")
-		if accept == "text/xml" {
-			return c.XML(http.StatusOK, sanitized)
-		}
-		return c.JSON(http.StatusCreated, sanitized)
+		return respond(c, http.StatusCreated, comment)
 	}
 }
 
@@ -105,8 +79,6 @@ func GetComment(db *gorm.DB) echo.HandlerFunc {
 		return respond(c, http.StatusOK, comment)
 	}
 }
-
-
 
 // UpdateComment godoc
 // @Summary Update an comment

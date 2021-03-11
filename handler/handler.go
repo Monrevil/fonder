@@ -33,6 +33,25 @@ func getByID(c echo.Context, db *gorm.DB, i interface{}) (int, error) {
 	return 200, nil
 }
 
+type body interface {
+	Sanitize(c echo.Context)
+	Validate() error
+}
+
+func saveBody(c echo.Context, db *gorm.DB, b body) (int, error) {
+	if err := c.Bind(b); err != nil {
+		return http.StatusBadRequest, err
+	}
+	b.Sanitize(c)
+
+	if err := b.Validate(); err != nil {
+		return http.StatusBadRequest, err
+	}
+	model.PingDB(db)
+	db.Create(b)
+	return 200, nil
+}
+
 //Response format handling
 func respond(c echo.Context, code int, i interface{}) error {
 	accept := c.Request().Header.Get("accept")

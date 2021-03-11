@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
@@ -48,29 +47,16 @@ func ListPosts(db *gorm.DB) echo.HandlerFunc {
 func SavePost(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		post := new(model.Post)
-		if err := c.Bind(post); err != nil {
-			return respond(c, http.StatusBadRequest, err.Error())
+		if code, err := saveBody(c, db, post); err != nil {
+			return respond(c, code, err.Error())
 		}
-		if err := post.Validate(); err != nil {
-			return respond(c, http.StatusBadRequest, err.Error())
-		}
-		//get info from jwt
-		user := c.Get("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		JWTid := int(claims["id"].(float64))
-		//sanitize
-		sanitized := &model.Post{
-			ID:     0,
-			UserID: JWTid,
-			Title:  post.Title,
-			Body:   post.Body,
-		}
-		model.PingDB(db)
-		db.Create(sanitized)
+		return respond(c, http.StatusOK, post)
 
-		return respond(c, http.StatusCreated, sanitized)
 	}
+
 }
+
+
 
 // GetPost godoc
 // @Summary Show a post
